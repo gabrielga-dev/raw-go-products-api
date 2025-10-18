@@ -1,7 +1,9 @@
 package produto_controller
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	"text/template"
 
 	produto_model "github.org/gabrielga-dev/raw-go-products-api/model/produtoModel"
@@ -16,4 +18,21 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func Novo(w http.ResponseWriter, r *http.Request) {
 	templates.ExecuteTemplate(w, "NovoProduto", nil)
+}
+
+func Cadastrar(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		nome := r.FormValue("nome")
+		descricao := r.FormValue("descricao")
+		preco, precoErr := strconv.ParseFloat(r.FormValue("preco"), 64)
+		quantidade, quantErr := strconv.Atoi(r.FormValue("quantidade"))
+		if precoErr == nil && quantErr == nil {
+			produto_model.CriarNovoProduto(nome, descricao, preco, quantidade)
+			http.Redirect(w, r, "/", 301)
+		} else {
+			http.Error(w, "Invalid input", http.StatusBadRequest)
+			fmt.Printf("Error parsing form values: %v, %v\n", precoErr, quantErr)
+			return
+		}
+	}
 }
