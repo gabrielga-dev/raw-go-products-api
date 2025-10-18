@@ -36,3 +36,18 @@ func Cadastrar(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func Deleta(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	if id != "" {
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			http.Error(w, "Invalid ID", http.StatusBadRequest)
+			return
+		}
+		produto_model.DeletarProduto(idInt)
+		http.Redirect(w, r, "/", 301)
+	} else {
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+	}
+}

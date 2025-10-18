@@ -16,7 +16,7 @@ type Produto struct {
 
 func BuscaTodosOsProdutos() []Produto {
 	db := db.ConectaComBancoDeDados()
-	selectProdutos, err := db.Query("SELECT nome, descricao, preco, quantidade FROM produto")
+	selectProdutos, err := db.Query("SELECT id, nome, descricao, preco, quantidade FROM produto")
 	produtos := []Produto{}
 	if err != nil {
 		fmt.Println(err)
@@ -26,7 +26,7 @@ func BuscaTodosOsProdutos() []Produto {
 			var id, quantidade int
 			var nome, descricao string
 			var preco float64
-			err = selectProdutos.Scan(&nome, &descricao, &preco, &quantidade)
+			err = selectProdutos.Scan(&id, &nome, &descricao, &preco, &quantidade)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -49,5 +49,15 @@ func CriarNovoProduto(nome, descricao string, preco float64, quantidade int) {
 		fmt.Println(err)
 	}
 	insertProduto.Exec(nome, descricao, preco, quantidade)
+	defer db.Close()
+}
+
+func DeletarProduto(id int) {
+	db := db.ConectaComBancoDeDados()
+	deleteProduto, err := db.Prepare("DELETE FROM produto WHERE id=$1")
+	if err != nil {
+		fmt.Println(err)
+	}
+	deleteProduto.Exec(id)
 	defer db.Close()
 }
