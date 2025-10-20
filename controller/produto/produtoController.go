@@ -6,13 +6,13 @@ import (
 	"strconv"
 	"text/template"
 
-	produto_model "github.org/gabrielga-dev/raw-go-products-api/model/produtoModel"
+	produto_dao "github.org/gabrielga-dev/raw-go-products-api/dao/produto"
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	produtos := produto_model.BuscaTodosOsProdutos()
+	produtos := produto_dao.BuscaTodosOsProdutos()
 	templates.ExecuteTemplate(w, "Index", produtos)
 }
 
@@ -27,7 +27,7 @@ func Cadastrar(w http.ResponseWriter, r *http.Request) {
 		preco, precoErr := strconv.ParseFloat(r.FormValue("preco"), 64)
 		quantidade, quantErr := strconv.Atoi(r.FormValue("quantidade"))
 		if precoErr == nil && quantErr == nil {
-			produto_model.CriarNovoProduto(nome, descricao, preco, quantidade)
+			produto_dao.CriarNovoProduto(nome, descricao, preco, quantidade)
 			http.Redirect(w, r, "/", 301)
 		} else {
 			http.Error(w, "Invalid input", http.StatusBadRequest)
@@ -45,7 +45,7 @@ func Deleta(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid ID", http.StatusBadRequest)
 			return
 		}
-		produto_model.DeletarProduto(idInt)
+		produto_dao.DeletarProduto(idInt)
 		http.Redirect(w, r, "/", 301)
 	} else {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
