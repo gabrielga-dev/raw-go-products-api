@@ -51,3 +51,7 @@ func Deleta(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 	}
 }
+
+func Edit(w http.ResponseWriter, r *http.Request) {
+	templates.ExecuteTemplate(w, "Edit", nil)
+}
