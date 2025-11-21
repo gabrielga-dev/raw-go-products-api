@@ -54,3 +54,28 @@ func DeletarProduto(id int) {
 	deleteProduto.Exec(id)
 	defer db.Close()
 }
+
+func BuscaProdutoPorID(id int) produto_model.Produto {
+	db := db.ConectaComBancoDeDados()
+	selectProduto, err := db.Query("SELECT id, nome, descricao, preco, quantidade FROM produto WHERE id=$1", id)
+	if err != nil {
+		fmt.Println(err)
+	}
+	p := produto_model.Produto{}
+	for selectProduto.Next() {
+		var id, quantidade int
+		var nome, descricao string
+		var preco float64
+		err = selectProduto.Scan(&id, &nome, &descricao, &preco, &quantidade)
+		if err != nil {
+			fmt.Println(err)
+		}
+		p.Id = id
+		p.Nome = nome
+		p.Descricao = descricao
+		p.Preco = preco
+		p.Quantidade = quantidade
+	}
+	defer db.Close()
+	return p
+}

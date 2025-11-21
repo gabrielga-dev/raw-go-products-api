@@ -53,5 +53,12 @@ func Deleta(w http.ResponseWriter, r *http.Request) {
 }
 
 func Edit(w http.ResponseWriter, r *http.Request) {
-	templates.ExecuteTemplate(w, "Edit", nil)
+	id := r.URL.Query().Get("id")
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+	produto := produto_dao.BuscaProdutoPorID(idInt)
+	templates.ExecuteTemplate(w, "Edit", produto)
 }
