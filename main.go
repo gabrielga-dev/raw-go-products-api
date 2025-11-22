@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	dto "github.com/gabrielga-dev/migratto/dto"
 	migration_service "github.com/gabrielga-dev/migratto/service/migration"
@@ -22,6 +23,7 @@ func main() {
 }
 
 func inicializaBancoDeDados() error {
+	time.Sleep(5 * time.Second)
 	config := getMigrattoConfig()
 	fmt.Println("Starting migrations with Migratto...")
 	return migration_service.Migrate(config)
@@ -34,7 +36,7 @@ func getMigrattoConfig() dto.ConfigDTO {
 		dbPort = 5432 // Default port
 	}
 	dbName := os.Getenv("DATABASE_NAME")
-	dbUsername := os.Getenv("DATABASE_USERNAME")
+	dbUsername := os.Getenv("DATABASE_USER")
 	dbPassword := os.Getenv("DATABASE_PASSWORD")
 
 	return dto.ConfigDTO{
