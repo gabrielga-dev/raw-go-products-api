@@ -9,7 +9,7 @@ import (
 
 func BuscaTodosOsProdutos() []produto_model.Produto {
 	db := db.ConectaComBancoDeDados()
-	selectProdutos, err := db.Query("SELECT id, nome, descricao, preco, quantidade FROM produto")
+	selectProdutos, err := db.Query("SELECT id, nome, descricao, preco, quantidade FROM produto ORDER BY id ASC")
 	produtos := []produto_model.Produto{}
 	if err != nil {
 		fmt.Println(err)
@@ -78,4 +78,14 @@ func BuscaProdutoPorID(id int) produto_model.Produto {
 	}
 	defer db.Close()
 	return p
+}
+
+func AtualizarProduto(id int, nome string, descricao string, preco float64, quantidade int) {
+	db := db.ConectaComBancoDeDados()
+	updateProduto, err := db.Prepare("UPDATE produto SET nome=$1, descricao=$2, preco=$3, quantidade=$4 WHERE id=$5")
+	if err != nil {
+		fmt.Println(err)
+	}
+	updateProduto.Exec(nome, descricao, preco, quantidade, id)
+	defer db.Close()
 }

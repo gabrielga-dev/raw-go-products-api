@@ -9,7 +9,8 @@
                         <p class="lead">Insira os dados para atualizar</p>
                     </div>
                 </div>
-                <form method="POST" action="insert">
+                <form method="POST" action="update">
+                    <input type="hidden" name="id" value="{{.Id}}">
                     <div class="row">
                         <div class="col-sm-8">
                             <div class="form-group">
@@ -42,7 +43,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" value="salvar" class="btn btn-success">Atualizar</button>
+                    <button type="submit" value="atualizar" class="btn btn-success">Atualizar</button>
                     <a class="btn btn-info" href="/">Voltar</a>
                 </form>
         </div>
