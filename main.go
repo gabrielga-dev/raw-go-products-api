@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 
 	dto "github.com/gabrielga-dev/migratto/dto"
 	migration_service "github.com/gabrielga-dev/migratto/service/migration"
@@ -20,18 +22,30 @@ func main() {
 }
 
 func inicializaBancoDeDados() error {
-	config := dto.ConfigDTO{
+	config := getMigrattoConfig()
+	fmt.Println("Starting migrations with Migratto...")
+	return migration_service.Migrate(config)
+}
+
+func getMigrattoConfig() dto.ConfigDTO {
+	dbHost := os.Getenv("DATABASE_HOST")
+	dbPort, err := strconv.Atoi(os.Getenv("DATABASE_PORT"))
+	if err != nil {
+		dbPort = 5432 // Default port
+	}
+	dbName := os.Getenv("DATABASE_NAME")
+	dbUsername := os.Getenv("DATABASE_USERNAME")
+	dbPassword := os.Getenv("DATABASE_PASSWORD")
+
+	return dto.ConfigDTO{
 		DatabaseDriver:   "postgres",
-		DatabaseHost:     "localhost",
-		DatabasePort:     5432,
-		DatabaseName:     "go-produtos",
-		DatabaseUsername: "admin",
-		DatabasePassword: "admin123",
+		DatabaseHost:     dbHost,
+		DatabasePort:     dbPort,
+		DatabaseName:     dbName,
+		DatabaseUsername: dbUsername,
+		DatabasePassword: dbPassword,
 		Sslmode:          "disable",
 		MigrationsDir:    "./migrations",
 		Log:              true,
 	}
-
-	fmt.Println("Starting migrations with Migratto...")
-	return migration_service.Migrate(config)
 }
