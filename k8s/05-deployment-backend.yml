@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
         - name: backend
-          image: gabrielguimaraesdvlpr/raw-go-products-api:v1.0
+          image: gabrielguimaraesdvlpr/raw-go-products-api:v1.6
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - containerPort: 8000
           env:
             - name: DATABASE_HOST
               valueFrom:
